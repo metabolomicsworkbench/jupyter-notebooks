@@ -12,6 +12,8 @@ Perform Volcano Plot Analysis [![Binder](https://mybinder.org/badge_logo.svg)](h
 
 Plot Named Metabolites Results Example [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPlotNamedMetabolitesResultsExample.ipynb)
 
+Rest API Compound Data Example [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPICompoundDataExample.ipynb)
+
 Rest API Exact Mass Data Example [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPIExactMassDataExample.ipynb)
 
 Rest API Genet Data Example [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPIGenetDataExample.ipynb)
