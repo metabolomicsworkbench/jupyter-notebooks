@@ -22,7 +22,7 @@ Rest API M Over Z Data Example [![Binder](https://mybinder.org/badge_logo.svg)](
 
 Rest API Named Metabolites Results Example	[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPINamedMetabolitesResultsExample.ipynb)
 
-Rest API Protein Data Example [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPIProteinDataExample.ipyn)
+Rest API Protein Data Example [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPIProteinDataExample.ipynb)
 
 Rest API RefMet Data Example [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPIRefMetDataExample.ipynb)
 
