@@ -4,10 +4,18 @@
 
 https://www.metabolomicsworkbench.org
 
+Perform Clustered Heat Map Analysis [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPerformClusteredHeatMapAnalysis.ipynb)
+
 Perform Data Normalization [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPerformDataNormalization.ipynb)
-  
+
+Perform Linear Discriminant Analysis [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPerformLinearDiscriminantAnalysis.ipynb)
+
 Perform Principal Component Analysis [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPerformPrincipalComponentAnalysis.ipynb)
   
+Perform Random Forest Analysis [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPerformRandomForestAnalysis.ipynb)
+
+Perform Relative Log Abundance Analysis [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPerformRelativeLogAbundanceAnalysis.ipynb)
+
 Perform Volcano Plot Analysis [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPerformVolcanoPlotAnalysis.ipynb)
 
 Plot Named Metabolites Results Example [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPlotNamedMetabolitesResultsExample.ipynb)
