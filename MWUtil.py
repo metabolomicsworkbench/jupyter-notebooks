@@ -12,8 +12,7 @@ import requests
 import pandas as pd
 import numpy as np
 
-__all__ = ["ListStudiesAnalysisAndResultsData", "RetrieveStudiesAnalysisAndResultsData", "SetupUIFDataForStudiesAnalysisAndResults, SetupCSVDownloadLink"]
-
+__all__ = ["CheckAndWarnEmptyStudiesData", "CheckAndWarnEmptyStudiesUIFData", "ListClassInformation", "ListStudiesAnalysisAndResultsData", "RetrieveStudiesAnalysisAndResultsData", "RetrieveUploadedData", "SetupUIFDataForStudiesAnalysisAndResults, SetupCSVDownloadLink"]
 
 
 def ListStudiesAnalysisAndResultsData(StudiesResultsData, DisplayDataFrame = False, IPythonDisplayFuncRef = None, IPythonHTMLFuncRef = None):
@@ -113,15 +112,81 @@ def RetrieveStudiesAnalysisAndResultsData(StudyIDs, MWBaseURL = "https://www.met
                 continue
             
             print("Processing datatable text...")
-            ResultsDataTable, ClassNamesToNumsMap = _ProcessDataTableText(Response.text, AddClassNum = True)
+            Separator = "\t"
+            ResultsDataTable, ClassNamesToNumsMap = _ProcessDataTableText(Response.text, Sep = Separator, AddClassNum = True)
             StudiesResultsData[StudyID][AnalysisID]["class_names_to_nums"] = ClassNamesToNumsMap
             
             print("Setting up Pandas dataframe...")
             RESULTSDATATABLE = StringIO(ResultsDataTable)
-            StudiesResultsData[StudyID][AnalysisID]["data_frame"] = pd.read_csv(RESULTSDATATABLE, sep="\t", index_col = "Samples")
+            StudiesResultsData[StudyID][AnalysisID]["data_frame"] = pd.read_csv(RESULTSDATATABLE, sep = Separator, index_col = "Samples")
     
     return StudiesResultsData
 
+def RetrieveUploadedData(UploadedDataInfo):
+    """Retrieve data from the uploaded data information available
+    from the FileUpload ipywidget.
+    
+    Arguments:
+        UploadedDataInfo: Value of FileUpload ipywidget.
+
+    Returns:
+        dict : A dictionary containing retrieved data for uploaded data
+            file(s).
+
+    Examples:
+
+        StudiesResultsData = MWUtil.RetrieveUploadedData(UploadedDataInfo)
+        if len(StudiesResultsData.keys()) == 0:
+             print("No data available")
+    
+        for StudyID in StudiesResultsData:
+            for AnalysisID in StudiesResultsData[StudyID]:
+                print("\nstudy_id:%s\nanalysis_id:%s" % (StudyID, AnalysisID))
+                for DataType in StudiesResultsData[StudyID][AnalysisID]:
+                    DataValue = StudiesResultsData[StudyID][AnalysisID][DataType]
+                    if re.match("^(data_frame)$", DataType, re.I):
+                        print("data_frame: <Pandas DataFrame available; skipping display>")
+                    else:
+                        print("%s: %s" % (DataType, DataValue))
+
+    """
+    
+    print("\nProcessing uploaded data file(s)...")
+    
+    StudiesResultsData = {}
+    
+    for FileName, FileDataInfo in UploadedDataInfo.items():
+        Name = FileDataInfo["metadata"]["name"]
+        Type = FileDataInfo["metadata"]["type"]
+        Size = FileDataInfo["metadata"]["size"]
+            
+        Content = FileDataInfo["content"].decode()
+            
+        _, FileExt = os.path.splitext(Name)
+        if re.match("^(\.txt)|(\.tsv)$", FileExt):
+            Separator = "\t"
+        else:
+            Separator = ","
+
+        print("\nProcessing uploaded data file %s..." % Name)
+
+        StudyID = Name
+        AnalysisID = "NA"
+
+        # Intialize data...
+        StudiesResultsData[StudyID] = {}
+        StudiesResultsData[StudyID][AnalysisID] = {}
+        StudiesResultsData[StudyID][AnalysisID]["analysis_summary"] = "NA"
+        
+        ResultsDataTable, ClassNamesToNumsMap = _ProcessDataTableText(Content, Sep = Separator, NewSampleColName = "Samples", NewClassColName = "Class", AddClassNum = True)
+        StudiesResultsData[StudyID][AnalysisID]["class_names_to_nums"] = ClassNamesToNumsMap
+        
+        print("Setting up Pandas dataframe...")
+        RESULTSDATATABLE = StringIO(ResultsDataTable)
+        StudiesResultsData[StudyID][AnalysisID]["data_frame"] = pd.read_csv(RESULTSDATATABLE, sep = Separator, index_col = "Samples")
+
+    return StudiesResultsData
+    
 def _ProcessAnalysisData(StudiesResultsData, AnalysisData):
     """Process analysis data retrieved in JSON format for a study or set of studies"""
     
@@ -137,7 +202,6 @@ def _ProcessAnalysisData(StudiesResultsData, AnalysisData):
         # Intialize data...
         if StudyID not in StudiesResultsData:
             StudiesResultsData[StudyID] = {}
-            
         
         StudiesResultsData[StudyID][AnalysisID] = {}
         
@@ -149,19 +213,25 @@ def _ProcessAnalysisData(StudiesResultsData, AnalysisData):
             
             StudiesResultsData[StudyID][AnalysisID][DataType] = DataValue
 
-def _ProcessDataTableText(DataTableText, AddClassNum = True):
+def _ProcessDataTableText(DataTableText, Sep = "\t", NewSampleColName = None, NewClassColName = None, AddClassNum = True):
     """Process datatable retrieved retrieves in text format for a specific analysis ID"""
-    
+
     DataLines = []
-    
+
+    # Standardize new line char and split lines...
+    DataTableText = re.sub("(\r\n)|(\r)", "\n", DataTableText)
     TextLines = DataTableText.split("\n")
     
     # Process data labels...
-    LineWords = TextLines[0].split("\t")
+    LineWords = TextLines[0].split(Sep)
     
     DataLabels = []
-    DataLabels.append(LineWords[0])
-    DataLabels.append(LineWords[1])
+    ColLabel = NewSampleColName if NewSampleColName is not None else LineWords[0]
+    DataLabels.append(ColLabel)
+
+    ColLabel = NewClassColName if NewClassColName is not None else LineWords[1]
+    DataLabels.append(ColLabel)
+    
     if AddClassNum:
         DataLabels.append("ClassNum")
     
@@ -169,13 +239,13 @@ def _ProcessDataTableText(DataTableText, AddClassNum = True):
         Name = LineWords[Index]
         DataLabels.append(Name)
     
-    DataLines.append("\t".join(DataLabels))
+    DataLines.append(Sep.join(DataLabels))
     
     # Process data...
     ClassNamesMap = {}
     ClassNum = 0
     for Index in range(1, len(TextLines)):
-        LineWords = TextLines[Index].split("\t")
+        LineWords = TextLines[Index].split(Sep)
         
         if len(LineWords) <= 2:
             continue
@@ -195,7 +265,7 @@ def _ProcessDataTableText(DataTableText, AddClassNum = True):
         for Index in range(2, len(LineWords)):
             DataLine.append(LineWords[Index])
         
-        DataLines.append("\t".join(DataLine))
+        DataLines.append(Sep.join(DataLine))
     
     return ("\n".join(DataLines), ClassNamesMap)
 
@@ -280,3 +350,86 @@ def SetupCSVDownloadLink(DataFrame, Title = "Download CSV file", CSVFilename = "
     HTMLText = '<a download="%s" href="data:text/csv;base64,%s" target="_blank">%s</a>' % (CSVFilename, Base64EncodedData, Title)
     
     return HTMLText
+
+
+def CheckAndWarnEmptyStudiesData(StudiesResultsData, RetrievedMWData = True, SpecifiedStudyIDs = None):
+    """Check and warn about empty results data.
+
+    Arguments:
+        StudiesResultsData (dict): A dictionary containing retrieved data for 
+            analysis and results in specified study ID(s).
+        RetrievedMWData (bool): Data retrived from MW.
+        SpecifiedStudyIDs (str): Specified study IDs.
+
+    """
+
+    if StudiesResultsData is None or len(StudiesResultsData.keys()) == 0:
+        if RetrievedMWData:
+            print("Failed to retrieve data. Specify valid study ID(s) and click button above without re-running the cell...")
+        else:
+            print("Failed to upload data. Select valid file(s) and click button above without re-running the cell...")
+    else:
+        if RetrievedMWData:
+            if SpecifiedStudyIDs is None:
+                print("Successfully retrieved data for specified study ID(s)...")
+            else:
+                print("Successfully retrieved data for specified study ID(s): %s" % SpecifiedStudyIDs)
+        else:
+            print("Successfully uploaded specified data file(s): %s" % (", ".join(StudiesResultsData.keys())))
+
+def CheckAndWarnEmptyStudiesUIFData(StudiesUIFData, RetrievedMWData = True, SpecifiedStudyIDs = None):
+    """Check and warn about empty UIF data.
+
+    Arguments:
+        StudiesUIFsData (dict): A dictionary containing studies and analysis
+            data for creating UIF.
+        RetrievedMWData (bool): Data retrived from MW.
+        SpecifiedStudyIDs (str): Specified study IDs.
+
+    """
+    
+    if StudiesUIFData is None or len(StudiesUIFData.keys()) == 0:
+        if RetrievedMWData:
+            print("Failed to retrieve data containing multiple classes. Specify valid study ID(s) and try again...")
+        else:
+            print("Failed to retrieve data containing multiple classes. Specify valid data file(s) and try again...")
+    else:
+        if RetrievedMWData:
+            if SpecifiedStudyIDs is None:
+                print("Successfully retrieved data for specified study ID(s)...")
+            else:
+                print("Successfully retrieved data for specified study ID(s): %s" % SpecifiedStudyIDs)
+        else:
+            print("Successfully uploaded specified data file(s): %s" % (", ".join(StudiesUIFData["StudyIDs"])))
+
+# List class information...
+def ListClassInformation(StudiesResultsData, StudyID, AnalysisID, RetrievedMWData = True, ClassNumsColorNamesMap = None):
+    """List information for available class names and numbers.
+  
+    Arguments:
+        StudiesResultsData (dict): A dictionary containing retrieved data for 
+            analysis and results in specified study ID(s).
+        StudyID (str): StudyID or uploaded file name.
+        AnalysisID (str): AnalysisID or NA for uploaded file.
+        RetrievedMWData (bool): Data retrived from MW.
+        ClassNumsColorNamesMap (dict): Class num to color name map.
+
+    """
+    
+    StudyIDLabel = "StudyID" if RetrievedMWData else "Uploaded File"
+    print("%s: %s" % (StudyIDLabel, StudyID))
+    
+    print("AnalysisID: %s\nAnalysis Summary: %s" % (AnalysisID, StudiesResultsData[StudyID][AnalysisID]["analysis_summary"]))
+    
+    for ClassName in StudiesResultsData[StudyID][AnalysisID]["class_names_to_nums"]:
+        ClassNum = StudiesResultsData[StudyID][AnalysisID]["class_names_to_nums"][ClassName]
+        
+        ClassNumColor = None
+        if ClassNumsColorNamesMap is not None:
+            if ClassNum in ClassNumsColorNamesMap:
+                ClassNumColor = ClassNumsColorNamesMap[ClassNum]
+        
+        if ClassNumColor is not None:
+            print("ClassNum: %s; ClassNumColor: %s\nClassName: %s" % (ClassNum, ClassNumColor, ClassName))
+        else:
+            print("ClassNum: %s; ClassName: %s" % (ClassNum, ClassName))
