@@ -3,6 +3,7 @@ name: example-environment
 channels:
   - conda-forge
 dependencies:
+  - ipywidgets=7.5.*
   - requests
   - pandas
   - numpy
