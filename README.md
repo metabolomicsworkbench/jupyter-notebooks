@@ -9,7 +9,8 @@ https://www.metabolomicsworkbench.org
   * Normalize data [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPerformDataNormalization.ipynb) 
   * Plot relative log abundance [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPerformRelativeLogAbundanceAnalysis.ipynb)
 * Clustering and correlation
-  * Perform clustered heatmap analysis [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPerformClusteredHeatMapAnalysis.ipynb)* Univariate analysis
+  * Perform clustered heatmap analysis [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPerformClusteredHeatMapAnalysis.ipynb)
+* Univariate analysis
   * Perform volcano plot analysis [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPerformVolcanoPlotAnalysis.ipynb)
 * Multivariate analysis
   * Perform principal component analysis [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPerformPrincipalComponentAnalysis.ipynb)
