@@ -27,4 +27,4 @@ https://www.metabolomicsworkbench.org
   * Calculate exact mass for lipid species [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPIExactMassDataExample.ipynb) 
   * Perform m/z search [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPIMOverZDataExample.ipynb)
   
-Run all notebooks [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/masterb)
+Run all notebooks [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master)
