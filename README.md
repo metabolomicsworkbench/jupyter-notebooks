@@ -4,34 +4,27 @@
 
 https://www.metabolomicsworkbench.org
 
-Perform Clustered Heat Map Analysis [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPerformClusteredHeatMapAnalysis.ipynb)
-
-Perform Data Normalization [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPerformDataNormalization.ipynb)
-
-Perform Linear Discriminant Analysis [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPerformLinearDiscriminantAnalysis.ipynb)
-
-Perform Principal Component Analysis [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPerformPrincipalComponentAnalysis.ipynb)
+* Data normalization and averaging
+  * Plot distributions of metabolites [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPlotNamedMetabolitesResultsExample.ipynb)
+  * Normalize data [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPerformDataNormalization.ipynb) 
+  * Plot relative log abundance [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPerformRelativeLogAbundanceAnalysis.ipynb)
+* Clustering and correlation
+  * Perform clustered heatmap analysis [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPerformClusteredHeatMapAnalysis.ipynb)* Univariate analysis
+  * Perform volcano plot analysis [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPerformVolcanoPlotAnalysis.ipynb)
+* Multivariate analysis
+  * Perform principal component analysis [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPerformPrincipalComponentAnalysis.ipynb)
+  * Perform linear discriminant analysis [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPerformLinearDiscriminantAnalysis.ipynb)
+  * Perform partial least squares discriminant analysis [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPerformPartialLeastSquaresDiscriminantAnalysis.ipynb)
+* Classification and feature analysis
+  * Perform random forest analysis [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPerformRandomForestAnalysis.ipynb) 
+* Retrieving data using MW REST API
+  * Retrieve study data [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPIStudyDataExample.ipynb)
+  * Retrieve compound data [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPICompoundDataExample.ipynb)
+  * Retrieve named metabolites data [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPINamedMetabolitesResultsExample.ipynb)
+  * Retrieve RefMet data [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPIRefMetDataExample.ipynb)
+  * Retrieve gene data [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPIGenetDataExample.ipynb)
+  * Retrieve protein data [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPIProteinDataExample.ipynb)
+  * Calculate exact mass for lipid species [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPIExactMassDataExample.ipynb) 
+  * Perform m/z search [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPIMOverZDataExample.ipynb)
   
-Perform Random Forest Analysis [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPerformRandomForestAnalysis.ipynb)
-
-Perform Relative Log Abundance Analysis [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPerformRelativeLogAbundanceAnalysis.ipynb)
-
-Perform Volcano Plot Analysis [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPerformVolcanoPlotAnalysis.ipynb)
-
-Plot Named Metabolites Results Example [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPlotNamedMetabolitesResultsExample.ipynb)
-
-Rest API Compound Data Example [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPICompoundDataExample.ipynb)
-
-Rest API Exact Mass Data Example [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPIExactMassDataExample.ipynb)
-
-Rest API Genet Data Example [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPIGenetDataExample.ipynb)
-
-Rest API M Over Z Data Example [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPIMOverZDataExample.ipynb)
-
-Rest API Named Metabolites Results Example	[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPINamedMetabolitesResultsExample.ipynb)
-
-Rest API Protein Data Example [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPIProteinDataExample.ipynb)
-
-Rest API RefMet Data Example [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPIRefMetDataExample.ipynb)
-
-Rest API Study Data Example	[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPIStudyDataExample.ipynb)
+Run all notebooks [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/masterb)
