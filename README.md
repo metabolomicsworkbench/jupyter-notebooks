@@ -23,7 +23,7 @@ https://www.metabolomicsworkbench.org
   * Retrieve compound data [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPICompoundDataExample.ipynb)
   * Retrieve named metabolites data [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPINamedMetabolitesResultsExample.ipynb)
   * Retrieve RefMet data [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPIRefMetDataExample.ipynb)
-  * Retrieve gene data [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPIGenetDataExample.ipynb)
+  * Retrieve gene data [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPIGeneDataExample.ipynb)
   * Retrieve protein data [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPIProteinDataExample.ipynb)
   * Calculate exact mass for lipid species [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPIExactMassDataExample.ipynb) 
   * Perform m/z search [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWRestAPIMOverZDataExample.ipynb)
