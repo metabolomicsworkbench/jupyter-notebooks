@@ -12,7 +12,7 @@ import requests
 import pandas as pd
 import numpy as np
 
-__all__ = ["CheckAndWarnEmptyStudiesData", "CheckAndWarnEmptyStudiesUIFData", "ListClassInformation", "ListStudiesAnalysisAndResultsData", "RetrieveStudiesAnalysisAndResultsData", "RetrieveUploadedData", "SetupUIFDataForStudiesAnalysisAndResults, SetupCSVDownloadLink"]
+__all__ = ["CheckAndWarnEmptyStudiesData", "CheckAndWarnEmptyStudiesUIFData", "CoerceDataFramColumnValuesToNumeric", "GetNumberOfMissingValue", "ListClassInformation", "ListStudiesAnalysisAndResultsData", "ProcessMissingValues", "RetrieveStudiesAnalysisAndResultsData", "RetrieveUploadedData", "SetupUIFDataForStudiesAnalysisAndResults, SetupCSVDownloadLink"]
 
 
 def ListStudiesAnalysisAndResultsData(StudiesResultsData, DisplayDataFrame = False, IPythonDisplayFuncRef = None, IPythonHTMLFuncRef = None):
@@ -42,22 +42,35 @@ def ListStudiesAnalysisAndResultsData(StudiesResultsData, DisplayDataFrame = Fal
             for DataType in StudiesResultsData[StudyID][AnalysisID]:
                 DataValue = StudiesResultsData[StudyID][AnalysisID][DataType]
                 if re.match("^(data_frame)$", DataType, re.I):
+                    print("\nNumber of missing values in data_frame: %d" % GetNumberOfMissingValue(DataValue))
                     if DisplayDataFrame and IPythonDisplayFuncRef is not None and IPythonHTMLFuncRef is not None:
                         print("data_frame:\n")
-                        IPythonDisplayFuncRef(IPythonHTMLFuncRef(DataValue.to_html(max_rows = 10, max_cols = 10)))
+                        IPythonDisplayFuncRef(IPythonHTMLFuncRef(DataValue.to_html(max_rows = 5, max_cols = 10)))
                     else:
                         print("data_frame: <Pandas DataFrame available; skipping display>")
                 else:
                     print("%s: %s" % (DataType, DataValue))
 
-def RetrieveStudiesAnalysisAndResultsData(StudyIDs, MWBaseURL = "https://www.metabolomicsworkbench.org/rest"):
+def RetrieveStudiesAnalysisAndResultsData(StudyIDs, MWBaseURL = "https://www.metabolomicsworkbench.org/rest", MissingValuesMethod = None):
     """Retrieve analysis and results data for a study ID or list of space
     delimited study IDs. In addition, study substrings are allowed to
     perform fuzzy match.
     
+    The following methods are supported to process missing values:
+    
+    None or NoAction - Don't process missing values
+    DeleteRows - Delete observations containing missing values
+    DeleteColumns - Delete variables containing missing values
+    ReplaceByColumnMean - Replace missing values by column mean
+    ReplaceColumnMedian - Replace missing values by column median
+    ReplaceByZero - Replace missing values by 0
+    LinearInterpolation - Replace missing values by linear interpolation
+    
+    
     Arguments:
         StudyIDs (str): Study ID or IDs.
         MWBaseURL (str): REST URL base for MW.
+        MissingValuesMethod (str): Method for processing missing values.
 
     Returns:
         dict : A dictionary containing retrieved data  for analysis and
@@ -118,16 +131,33 @@ def RetrieveStudiesAnalysisAndResultsData(StudyIDs, MWBaseURL = "https://www.met
             
             print("Setting up Pandas dataframe...")
             RESULTSDATATABLE = StringIO(ResultsDataTable)
-            StudiesResultsData[StudyID][AnalysisID]["data_frame"] = pd.read_csv(RESULTSDATATABLE, sep = Separator, index_col = "Samples")
+            DataFrame = pd.read_csv(RESULTSDATATABLE, sep = Separator, index_col = "Samples")
+            
+            CoerceDataFramColumnValuesToNumeric(DataFrame, StartColNum = 2)
+            DataFrame = ProcessMissingValues(DataFrame, MissingValuesMethod)
+            
+            StudiesResultsData[StudyID][AnalysisID]["data_frame"] = DataFrame
+            
     
     return StudiesResultsData
 
-def RetrieveUploadedData(UploadedDataInfo):
+def RetrieveUploadedData(UploadedDataInfo, MissingValuesMethod = None):
     """Retrieve data from the uploaded data information available
     from the FileUpload ipywidget.
     
+    The following methods are supported to process missing values:
+    
+    None or NoAction - Don't process missing values
+    DeleteRows - Delete observations containing missing values
+    DeleteColumns - Delete variables containing missing values
+    ReplaceByColumnMean - Replace missing values by column mean
+    ReplaceColumnMedian - Replace missing values by column median
+    ReplaceByZero - Replace missing values by 0
+    LinearInterpolation - Replace missing values by linear interpolation
+    
     Arguments:
         UploadedDataInfo: Value of FileUpload ipywidget.
+        MissingValuesMethod (str): Method for processing missing values.
 
     Returns:
         dict : A dictionary containing retrieved data for uploaded data
@@ -183,12 +213,17 @@ def RetrieveUploadedData(UploadedDataInfo):
         
         print("Setting up Pandas dataframe...")
         RESULTSDATATABLE = StringIO(ResultsDataTable)
-        StudiesResultsData[StudyID][AnalysisID]["data_frame"] = pd.read_csv(RESULTSDATATABLE, sep = Separator, index_col = "Samples")
+        DataFrame = pd.read_csv(RESULTSDATATABLE, sep = Separator, index_col = "Samples")
+        
+        CoerceDataFramColumnValuesToNumeric(DataFrame, StartColNum = 2)
+        DataFrame = ProcessMissingValues(DataFrame, MissingValuesMethod)
+        
+        StudiesResultsData[StudyID][AnalysisID]["data_frame"] = DataFrame
 
     return StudiesResultsData
     
 def _ProcessAnalysisData(StudiesResultsData, AnalysisData):
-    """Process analysis data retrieved in JSON format for a study or set of studies"""
+    """Process analysis data retrieved in JSON format for a study or set of studies."""
     
     if "study_id" in AnalysisData:
         # Turn single study with single analysis data set into dictionary
@@ -268,6 +303,99 @@ def _ProcessDataTableText(DataTableText, Sep = "\t", NewSampleColName = None, Ne
         DataLines.append(Sep.join(DataLine))
     
     return ("\n".join(DataLines), ClassNamesMap)
+
+def ProcessMissingValues(DataFrame, Method = None):
+    """Process missing values in a dataframe. The following
+    methods are supported to process missing values:
+    
+    None or NoAction - Don't process missing values
+    DeleteRows - Delete observations containing missing values
+    DeleteColumns - Delete variables containing missing values
+    ReplaceByColumnMean - Replace missing values by column mean
+    ReplaceColumnMedian - Replace missing values by column median
+    ReplaceByZero - Replace missing values by 0
+    LinearInterpolation - Replace missing values by linear interpolation 
+    
+    Arguments:
+        DataFrame (panda): Panda dataframe.
+        Method (str): Method for process missing value.
+    
+    Returns:
+        panda : Updated data frame.
+    
+    """
+    
+    NumOfMissingValues = GetNumberOfMissingValue(DataFrame)
+    if (NumOfMissingValues == 0):
+        print("Dataframe contains no missing values...")
+        return DataFrame
+    else:
+        print("Dataframe contains %s missing values..." % NumOfMissingValues)
+
+    if (Method is None or re.match("^(NoAction|None)$", Method, re.I)):
+        print("Skipping processing of missing values...")
+        return DataFrame
+        
+    if re.match("^DeleteRows$", Method, re.I):
+        print("Deleting rows containing missing values...")
+        DataFrame = DataFrame.dropna(axis = 0)
+    elif re.match("^DeleteColumns$", Method, re.I):
+        print("Deleting columns containing missing values...")
+        DataFrame = DataFrame.dropna(axis = 1)
+    elif (re.match("^ReplaceByColumnMean$", Method, re.I)):
+        print("Replaceing missing values by column mean...")
+        DataFrame = DataFrame.fillna(DataFrame.mean())
+    elif (re.match("^ReplaceByColumnMedian$", Method, re.I)):
+        print("Replaceing missing values by column median...")
+        DataFrame = DataFrame.fillna(DataFrame.median())
+    elif (re.match("^ReplaceByZero$", Method, re.I)):
+        print("Replaceing missing values by zero...")
+        DataFrame = DataFrame.fillna(0)
+    elif (re.match("^LinearInterpolation$", Method, re.I)):
+        print("Replaceing missing values by linera interpolation...")
+        DataFrame = DataFrame.interpolate(method = 'linear', axis = 0)
+    else:
+        print("***Error: ProcessMissingValues: Unknown Method: %s" % Method)
+        return DataFrame
+    
+    # Drop any leftover NaN values...
+    NumOfMissingValues = GetNumberOfMissingValue(DataFrame)
+    if (NumOfMissingValues):
+        print("***Warning: Dropping rows containing %s leftover missing values after procesing missing values using method %s..." % (NumOfMissingValues, Method))
+        DataFrame = DataFrame.dropna(axis = 0)
+    
+    return DataFrame
+
+def CoerceDataFramColumnValuesToNumeric(DataFrame, StartColNum = 0):
+    """Coerce dataframe column values to numeric values.
+    
+    Arguments:
+        DataFrame (panda): Panda dataframe.
+        StartColNum (int): Start column number.
+
+    Returns:
+        panda : Updtaed data frame.
+
+    """
+
+    print("Coercing dataframe column values to numerical values starting at column %d..." % StartColNum)
+    for ColNum in  DataFrame.columns[StartColNum:]:
+        DataFrame[ColNum] = pd.to_numeric(DataFrame[ColNum], errors='coerce')
+    
+    return DataFrame
+
+def GetNumberOfMissingValue(DataFrame):
+    """Count number of missing values in a dataframe. The missing
+    values correspond to NaN in the dataframe.
+    
+    Arguments:
+        DataFrame (panda): Panda dataframe.
+
+    Returns:
+        int : Number of missing values in dataframe.
+
+    """
+    return DataFrame.isnull().sum().sum()
 
 def SetupUIFDataForStudiesAnalysisAndResults(StudiesResultsData, MinClassCount = None):
     """Setup data for creating  UIF from analysis and results data for a single
