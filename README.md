@@ -4,6 +4,8 @@
 
 https://www.metabolomicsworkbench.org
 
+[Instructions for using the Metabolomics Workbench Jupyter Notebook Examples on the Metabolomics Workbench Cloud](https://github.com/metabolomicsworkbench/binder/raw/master/jupyter-notebooks-on-metabolomics-cloud.pdf)
+
 * Data normalization and averaging
   * Plot distributions of metabolites [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPlotNamedMetabolitesResultsExample.ipynb)
   * Normalize data [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/metabolomicsworkbench/binder/master?filepath=MWPerformDataNormalization.ipynb) 
